@@ -1,0 +1,58 @@
+.tour-package-form {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .tour-package-form .form-group {
+    margin-bottom: 15px;
+  }
+  
+  .tour-package-form .form-group label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+  
+  .tour-package-form .form-control {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+  }
+  
+  .tour-package-form .form-control:focus {
+    border-color: #4CAF50;
+    outline: none;
+  }
+  
+  .tour-package-form textarea.form-control {
+    height: 150px;
+  }
+  
+  .tour-package-form .btn-submit {
+    width: 100%;
+    padding: 12px;
+    background-color: #4CAF50;
+    color: white;
+    font-size: 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .tour-package-form .btn-submit:hover {
+    background-color: #45a049;
+  }
+  
+  .tour-package-form .btn-submit:disabled {
+    background-color: #c6c6c6;
+    cursor: not-allowed;
+  }
+  
