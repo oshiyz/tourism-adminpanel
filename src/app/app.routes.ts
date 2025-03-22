@@ -1,13 +1,14 @@
-import { NgModule } from '@angular/core';
-import { Routes , RouterModule} from '@angular/router';
+// src/app/app.routes.ts
+import { Routes } from '@angular/router';
 
+
+// Export the routes constant
 export const routes: Routes = [
-    { path: 'admin', loadChildren: () => import('./admin/admin.module').then(m => m.AdminModule) },
-    { path: '', redirectTo: '/admin/tour-packages', pathMatch: 'full' }
-  ];
-  
-@NgModule({
-  imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
-})
+  {
+    path: 'admin',
+    loadChildren: () => import('./admin/admin.module').then(m => m.AdminModule) // Lazy load the AdminModule
+  },
+  { path: '', redirectTo: '/admin', pathMatch: 'full' } // Default route
+];
+
 export class AppRoutingModule { }

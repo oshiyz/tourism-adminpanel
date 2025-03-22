@@ -1,11 +1,8 @@
 <nav>
-    <ul>
-      <li><a routerLink="tour-packages">Manage Tour Packages</a></li>
-      <li><a routerLink="tour-packages/new">Create New Package</a></li> <!-- Link to form for creating a new package -->
-      <li><a routerLink="tour-packages/table"> Packages</a></li> <!-- Link to form for creating a new package -->
+  <ul>
+    <li><a routerLink="/admin/tour-packages/new" routerLinkActive="active">📦 Manage Tour Packages</a></li>
+    <li><a routerLink="/admin/tour-packages/table" routerLinkActive="active">📋 View Packages</a></li>
+  </ul>
+</nav>
 
-    </ul>
-  </nav>
-  
-  <router-outlet></router-outlet>
-  
+<router-outlet></router-outlet>
