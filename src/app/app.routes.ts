@@ -25,6 +25,10 @@ export const routes: Routes = [
     loadComponent: () => import('./components/tour-packages/tour-packages.component').then(m => m.TourPackagesComponent)
   },
   {
+    path: 'places',
+    loadComponent: () => import('./components/places/places.component').then(m => m.PlacesComponent)
+  },
+  {
     path: 'bookings',
     loadComponent: () => import('./admin/bookings/bookings.component').then(m => m.BookingsComponent)
   },

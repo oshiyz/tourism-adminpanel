@@ -1,0 +1,126 @@
+<div class="places-container">
+  <div class="header">
+    <h2>{{ isEditing ? 'Edit Place' : 'Add New Place' }}</h2>
+    <button class="btn btn-primary" (click)="resetForm()" *ngIf="isEditing">Cancel Edit</button>
+  </div>
+
+  <form [formGroup]="placeForm" (ngSubmit)="onSubmit()" class="place-form">
+    <div class="form-group">
+      <label for="name">Name</label>
+      <input type="text" id="name" formControlName="name" class="form-control">
+      <div class="error" *ngIf="formControls['name'].errors?.['required'] && formControls['name'].touched">
+        Name is required
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="description">Description</label>
+      <textarea id="description" formControlName="description" class="form-control"></textarea>
+      <div class="error" *ngIf="formControls['description'].errors?.['required'] && formControls['description'].touched">
+        Description is required
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="images">Images (comma-separated URLs)</label>
+      <input type="text" id="images" formControlName="images" class="form-control">
+      <div class="error" *ngIf="formControls['images'].errors?.['required'] && formControls['images'].touched">
+        Images are required
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="price">Price</label>
+      <input type="number" id="price" formControlName="price" class="form-control">
+      <div class="error" *ngIf="formControls['price'].errors?.['required'] && formControls['price'].touched">
+        Price is required
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="packages">Packages</label>
+      <input type="text" id="packages" formControlName="packages" class="form-control">
+      <div class="error" *ngIf="formControls['packages'].errors?.['required'] && formControls['packages'].touched">
+        Packages are required
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="capacity">Capacity</label>
+      <input type="number" id="capacity" formControlName="capacity" class="form-control">
+      <div class="error" *ngIf="formControls['capacity'].errors?.['required'] && formControls['capacity'].touched">
+        Capacity is required
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="timeSlots">Time Slots</label>
+      <input type="text" id="timeSlots" formControlName="timeSlots" class="form-control">
+      <div class="error" *ngIf="formControls['timeSlots'].errors?.['required'] && formControls['timeSlots'].touched">
+        Time slots are required
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="specialFunctions">Special Functions</label>
+      <input type="text" id="specialFunctions" formControlName="specialFunctions" class="form-control">
+      <div class="error" *ngIf="formControls['specialFunctions'].errors?.['required'] && formControls['specialFunctions'].touched">
+        Special functions are required
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="location">Location</label>
+      <input type="text" id="location" formControlName="location" class="form-control">
+      <div class="error" *ngIf="formControls['location'].errors?.['required'] && formControls['location'].touched">
+        Location is required
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="contactInfo">Contact Info</label>
+      <input type="text" id="contactInfo" formControlName="contactInfo" class="form-control">
+      <div class="error" *ngIf="formControls['contactInfo'].errors?.['required'] && formControls['contactInfo'].touched">
+        Contact info is required
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="isActive">Active Status</label>
+      <input type="checkbox" id="isActive" formControlName="isActive">
+    </div>
+
+    <button type="submit" class="btn btn-primary" [disabled]="!placeForm.valid">
+      {{ isEditing ? 'Update Place' : 'Add Place' }}
+    </button>
+  </form>
+
+  <div class="places-table">
+    <h2>Places List</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Price</th>
+          <th>Capacity</th>
+          <th>Location</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let place of places">
+          <td>{{ place.name }}</td>
+          <td>{{ place.price | currency }}</td>
+          <td>{{ place.capacity }}</td>
+          <td>{{ place.location }}</td>
+          <td>{{ place.isActive ? 'Active' : 'Inactive' }}</td>
+          <td>
+            <button class="btn btn-sm btn-primary" (click)="editPlace(place)">Edit</button>
+            <button class="btn btn-sm btn-danger" (click)="deletePlace(place.id!)">Delete</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div> 
