@@ -22,7 +22,7 @@ export const routes: Routes = [
   },
   {
     path: 'tours',
-    loadComponent: () => import('./admin/tours/tours.component').then(m => m.ToursComponent)
+    loadComponent: () => import('./components/tour-packages/tour-packages.component').then(m => m.TourPackagesComponent)
   },
   {
     path: 'bookings',
