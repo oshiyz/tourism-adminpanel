@@ -9,14 +9,13 @@ export interface TourPackage {
   price: number;
   duration: string;
   location: string;
-  imageUrl: string;
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class TourPackageService {
-  private apiUrl = 'http://localhost:8080/api/tour-packages'; // Update this with your backend URL
+  private apiUrl = 'https://localhost:44399/api/TourPackage'; 
 
   constructor(private http: HttpClient) { }
 

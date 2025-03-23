@@ -44,16 +44,7 @@
           Location is required
         </div>
       </div>
-
-      <div class="form-group">
-        <label for="imageUrl">Image URL</label>
-        <input type="text" id="imageUrl" formControlName="imageUrl" class="form-control">
-        <div class="error-message" *ngIf="formControls['imageUrl'].touched && formControls['imageUrl'].errors?.['required']">
-          Image URL is required
-        </div>
-      </div>
-
-      <div class="form-actions">
+        <div class="form-actions">
         <button type="submit" class="btn btn-primary" [disabled]="!tourPackageForm.valid">
           {{ isEditing ? 'Update Package' : 'Add Package' }}
         </button>

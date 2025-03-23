@@ -26,7 +26,6 @@ export class TourPackagesComponent implements OnInit {
       price: ['', [Validators.required, Validators.min(0)]],
       duration: ['', Validators.required],
       location: ['', Validators.required],
-      imageUrl: ['', Validators.required]
     });
   }
 
