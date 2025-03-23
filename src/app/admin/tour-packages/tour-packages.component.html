@@ -22,4 +22,8 @@
   </tr>
 </table>
 
-<app-tour-package-form *ngIf="selectedPackage" [packageData]="selectedPackage" (formSubmit)="savePackage($event)"></app-tour-package-form>
+<app-tour-package-form
+  *ngIf="selectedPackage"
+  [packageData]="selectedPackage"
+  (formSubmit)="savePackage($event)">
+</app-tour-package-form>
