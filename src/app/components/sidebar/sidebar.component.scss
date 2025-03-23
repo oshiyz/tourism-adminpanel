@@ -1,0 +1,44 @@
+.sidebar {
+  background-color: #34495e;
+  width: 250px;
+  height: calc(100vh - 64px);
+  position: fixed;
+  left: 0;
+  top: 64px;
+  color: white;
+
+  &-content {
+    padding: 1rem 0;
+  }
+
+  .nav-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .nav-item {
+    margin: 0;
+  }
+
+  .nav-link {
+    display: flex;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    color: white;
+    text-decoration: none;
+    transition: background-color 0.3s;
+
+    &:hover {
+      background-color: #2c3e50;
+    }
+
+    &.active {
+      background-color: #2c3e50;
+    }
+
+    i {
+      margin-right: 10px;
+    }
+  }
+}

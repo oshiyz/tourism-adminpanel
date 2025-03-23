@@ -1,0 +1,95 @@
+<div class="tour-packages-container">
+  <div class="form-section">
+    <h2>{{ isEditing ? 'Edit Tour Package' : 'Add New Tour Package' }}</h2>
+    <form [formGroup]="tourPackageForm" (ngSubmit)="onSubmit()" class="tour-package-form">
+      <div class="form-group">
+        <label for="name">Package Name</label>
+        <input type="text" id="name" formControlName="name" class="form-control">
+        <div class="error-message" *ngIf="formControls['name'].touched && formControls['name'].errors?.['required']">
+          Name is required
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="description">Description</label>
+        <textarea id="description" formControlName="description" class="form-control"></textarea>
+        <div class="error-message" *ngIf="formControls['description'].touched && formControls['description'].errors?.['required']">
+          Description is required
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="price">Price</label>
+        <input type="number" id="price" formControlName="price" class="form-control">
+        <div class="error-message" *ngIf="formControls['price'].touched && formControls['price'].errors?.['required']">
+          Price is required
+        </div>
+        <div class="error-message" *ngIf="formControls['price'].touched && formControls['price'].errors?.['min']">
+          Price must be greater than 0
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="duration">Duration</label>
+        <input type="text" id="duration" formControlName="duration" class="form-control">
+        <div class="error-message" *ngIf="formControls['duration'].touched && formControls['duration'].errors?.['required']">
+          Duration is required
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="location">Location</label>
+        <input type="text" id="location" formControlName="location" class="form-control">
+        <div class="error-message" *ngIf="formControls['location'].touched && formControls['location'].errors?.['required']">
+          Location is required
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="imageUrl">Image URL</label>
+        <input type="text" id="imageUrl" formControlName="imageUrl" class="form-control">
+        <div class="error-message" *ngIf="formControls['imageUrl'].touched && formControls['imageUrl'].errors?.['required']">
+          Image URL is required
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary" [disabled]="!tourPackageForm.valid">
+          {{ isEditing ? 'Update Package' : 'Add Package' }}
+        </button>
+        <button type="button" class="btn btn-secondary" (click)="resetForm()" *ngIf="isEditing">
+          Cancel
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <div class="table-section">
+    <h2>Tour Packages List</h2>
+    <table class="tour-packages-table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Description</th>
+          <th>Price</th>
+          <th>Duration</th>
+          <th>Location</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let package of tourPackages">
+          <td>{{ package.name }}</td>
+          <td>{{ package.description }}</td>
+          <td>${{ package.price }}</td>
+          <td>{{ package.duration }}</td>
+          <td>{{ package.location }}</td>
+          <td class="actions">
+            <button class="btn btn-edit" (click)="editTourPackage(package)">Edit</button>
+            <button class="btn btn-delete" (click)="deleteTourPackage(package.id!)">Delete</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

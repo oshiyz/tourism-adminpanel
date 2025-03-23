@@ -1,0 +1,151 @@
+.tour-packages-container {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.form-section {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  margin-bottom: 30px;
+
+  h2 {
+    margin-bottom: 20px;
+    color: #2c3e50;
+  }
+}
+
+.tour-package-form {
+  display: grid;
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  label {
+    font-weight: 500;
+    color: #34495e;
+  }
+}
+
+.form-control {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+
+  &:focus {
+    outline: none;
+    border-color: #3498db;
+    box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+  }
+}
+
+textarea.form-control {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.error-message {
+  color: #e74c3c;
+  font-size: 12px;
+}
+
+.form-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.table-section {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+
+  h2 {
+    margin-bottom: 20px;
+    color: #2c3e50;
+  }
+}
+
+.tour-packages-table {
+  width: 100%;
+  border-collapse: collapse;
+
+  th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+
+  th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    color: #2c3e50;
+  }
+
+  tr:hover {
+    background-color: #f8f9fa;
+  }
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+}
+
+.btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s;
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.btn-primary {
+  background-color: #3498db;
+  color: white;
+
+  &:hover:not(:disabled) {
+    background-color: #2980b9;
+  }
+}
+
+.btn-secondary {
+  background-color: #95a5a6;
+  color: white;
+
+  &:hover {
+    background-color: #7f8c8d;
+  }
+}
+
+.btn-edit {
+  background-color: #f1c40f;
+  color: #2c3e50;
+
+  &:hover {
+    background-color: #f39c12;
+  }
+}
+
+.btn-delete {
+  background-color: #e74c3c;
+  color: white;
+
+  &:hover {
+    background-color: #c0392b;
+  }
+}
