@@ -1,44 +1,94 @@
 .sidebar {
-  background-color: #34495e;
-  width: 250px;
-  height: calc(100vh - 64px);
+  background: #2c3e50;
+  width: 260px;
+  height: 100vh;
   position: fixed;
   left: 0;
   top: 64px;
-  color: white;
+  z-index: 900;
+  transition: all 0.3s ease;
+  box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
 
-  &-content {
-    padding: 1rem 0;
-  }
-
-  .nav-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-
-  .nav-item {
-    margin: 0;
-  }
-
-  .nav-link {
+  .sidebar-content {
+    height: 100%;
     display: flex;
-    align-items: center;
-    padding: 1rem 1.5rem;
-    color: white;
-    text-decoration: none;
-    transition: background-color 0.3s;
+    flex-direction: column;
 
-    &:hover {
-      background-color: #2c3e50;
+    .sidebar-header {
+      padding: 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
+      .sidebar-logo {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: #ffffff;
+        font-size: 1.2rem;
+        font-weight: 600;
+
+        i {
+          font-size: 1.4rem;
+          color: #3498db;
+        }
+      }
     }
 
-    &.active {
-      background-color: #2c3e50;
-    }
+    .nav-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      flex: 1;
+      overflow-y: auto;
 
-    i {
-      margin-right: 10px;
+      .nav-item {
+        margin: 4px 0;
+
+        .nav-link {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          padding: 12px 20px;
+          color: #ecf0f1;
+          text-decoration: none;
+          transition: all 0.3s ease;
+          border-left: 3px solid transparent;
+
+          i {
+            font-size: 1.2rem;
+            width: 20px;
+            text-align: center;
+          }
+
+          &:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #3498db;
+          }
+
+          &.active {
+            background: rgba(52, 152, 219, 0.1);
+            color: #3498db;
+            border-left-color: #3498db;
+          }
+        }
+      }
     }
   }
+}
+
+// Scrollbar styling
+.nav-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.nav-list::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.nav-list::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+}
+
+.nav-list::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
 }

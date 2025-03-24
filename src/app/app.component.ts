@@ -1,17 +1,8 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
-import { SidebarModule } from 'primeng/sidebar';
-import { ButtonModule } from 'primeng/button';
-import { CardModule } from 'primeng/card';
-import { ChartModule } from 'primeng/chart';
-import { TableModule } from 'primeng/table';
-import { MatSidenavModule } from '@angular/material/sidenav';
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatIconModule } from '@angular/material/icon';
-import { MatListModule } from '@angular/material/list';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
+import { HeaderComponent } from './components/header/header.component';
+import { SidebarComponent } from './components/sidebar/sidebar.component';
 
 @Component({
   selector: 'app-root',
@@ -19,22 +10,12 @@ import { MatCardModule } from '@angular/material/card';
   imports: [
     CommonModule,
     RouterOutlet,
-    SidebarModule,
-    ButtonModule,
-    CardModule,
-    ChartModule,
-    TableModule,
-    MatSidenavModule,
-    MatToolbarModule,
-    MatIconModule,
-    MatListModule,
-    MatButtonModule,
-    MatCardModule
+    HeaderComponent,
+    SidebarComponent
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
 export class AppComponent {
   title = 'tourism-admin';
-  sidebarVisible: boolean = false;
 }
