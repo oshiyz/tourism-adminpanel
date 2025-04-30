@@ -47,8 +47,20 @@ export class TourPackagesComponent implements OnInit {
   onSubmit(): void {
     if (this.tourPackageForm.valid) {
       const formData = this.tourPackageForm.value;
+      // Ensure the data matches the TourPackage interface
+      const packageData: TourPackage = {
+        packageID: this.editingId || 0,
+        packageName: formData.packageName,
+        description: formData.description,
+        price: formData.price,
+        durationDays: formData.durationDays,
+        place: formData.place,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+
       if (this.isEditing && this.editingId) {
-        this.tourPackageService.updateTourPackage(this.editingId, formData).subscribe({
+        this.tourPackageService.updateTourPackage(this.editingId, packageData).subscribe({
           next: () => {
             this.loadTourPackages();
             this.resetForm();
@@ -58,7 +70,7 @@ export class TourPackagesComponent implements OnInit {
           }
         });
       } else {
-        this.tourPackageService.createTourPackage(formData).subscribe({
+        this.tourPackageService.createTourPackage(packageData).subscribe({
           next: () => {
             this.loadTourPackages();
             this.resetForm();
@@ -75,7 +87,15 @@ export class TourPackagesComponent implements OnInit {
     if (package_.packageID) {
       this.isEditing = true;
       this.editingId = package_.packageID;
-      this.tourPackageForm.patchValue(package_);
+      // Map the package data to match our form structure
+      const formData = {
+        packageName: package_.packageName,
+        description: package_.description,
+        price: package_.price,
+        durationDays: package_.durationDays,
+        place: package_.place
+      };
+      this.tourPackageForm.patchValue(formData);
     }
   }
 
