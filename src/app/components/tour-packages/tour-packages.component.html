@@ -70,14 +70,14 @@
       </thead>
       <tbody>
         <tr *ngFor="let package of tourPackages">
-          <td>{{ package.name }}</td>
+          <td>{{ package.packageName }}</td>
           <td>{{ package.description }}</td>
           <td>${{ package.price }}</td>
-          <td>{{ package.duration }}</td>
-          <td>{{ package.location }}</td>
+          <td>{{ package.durationDays }}</td>
+          <td>{{ package.place }}</td>
           <td class="actions">
             <button class="btn btn-edit" (click)="editTourPackage(package)">Edit</button>
-            <button class="btn btn-delete" (click)="deleteTourPackage(package.id!)">Delete</button>
+            <button class="btn btn-delete" (click)="deleteTourPackage(package.packageID!)">Delete</button>
           </td>
         </tr>
       </tbody>

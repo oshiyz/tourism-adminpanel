@@ -72,9 +72,9 @@ export class TourPackagesComponent implements OnInit {
   }
 
   editTourPackage(package_: TourPackage): void {
-    if (package_.id) {
+    if (package_.packageID) {
       this.isEditing = true;
-      this.editingId = package_.id;
+      this.editingId = package_.packageID;
       this.tourPackageForm.patchValue(package_);
     }
   }

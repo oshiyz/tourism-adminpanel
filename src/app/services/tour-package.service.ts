@@ -3,12 +3,14 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 export interface TourPackage {
-  id?: number;
-  name: string;
+  packageID: number;
+  packageName: string;
   description: string;
   price: number;
-  duration: string;
-  location: string;
+  durationDays: number;
+  place: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 @Injectable({
