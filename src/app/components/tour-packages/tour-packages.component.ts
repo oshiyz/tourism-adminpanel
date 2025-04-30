@@ -21,11 +21,11 @@ export class TourPackagesComponent implements OnInit {
     private fb: FormBuilder
   ) {
     this.tourPackageForm = this.fb.group({
-      name: ['', Validators.required],
+      packageName: ['', Validators.required],
       description: ['', Validators.required],
       price: ['', [Validators.required, Validators.min(0)]],
-      duration: ['', Validators.required],
-      location: ['', Validators.required],
+      durationDays: ['', Validators.required],
+      place: ['', Validators.required],
     });
   }
 

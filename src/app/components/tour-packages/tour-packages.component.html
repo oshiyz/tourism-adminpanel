@@ -3,9 +3,9 @@
     <h2>{{ isEditing ? 'Edit Tour Package' : 'Add New Tour Package' }}</h2>
     <form [formGroup]="tourPackageForm" (ngSubmit)="onSubmit()" class="tour-package-form">
       <div class="form-group">
-        <label for="name">Package Name</label>
-        <input type="text" id="name" formControlName="name" class="form-control">
-        <div class="error-message" *ngIf="formControls['name'].touched && formControls['name'].errors?.['required']">
+        <label for="packageName">Package Name</label>
+        <input type="text" id="packageName" formControlName="packageName" class="form-control">
+        <div class="error-message" *ngIf="formControls['packageName'].touched && formControls['packageName'].errors?.['required']">
           Name is required
         </div>
       </div>
@@ -30,18 +30,18 @@
       </div>
 
       <div class="form-group">
-        <label for="duration">Duration</label>
-        <input type="text" id="duration" formControlName="duration" class="form-control">
-        <div class="error-message" *ngIf="formControls['duration'].touched && formControls['duration'].errors?.['required']">
+        <label for="durationDays">Duration (Days)</label>
+        <input type="number" id="durationDays" formControlName="durationDays" class="form-control">
+        <div class="error-message" *ngIf="formControls['durationDays'].touched && formControls['durationDays'].errors?.['required']">
           Duration is required
         </div>
       </div>
 
       <div class="form-group">
-        <label for="location">Location</label>
-        <input type="text" id="location" formControlName="location" class="form-control">
-        <div class="error-message" *ngIf="formControls['location'].touched && formControls['location'].errors?.['required']">
-          Location is required
+        <label for="place">Place</label>
+        <input type="text" id="place" formControlName="place" class="form-control">
+        <div class="error-message" *ngIf="formControls['place'].touched && formControls['place'].errors?.['required']">
+          Place is required
         </div>
       </div>
         <div class="form-actions">
