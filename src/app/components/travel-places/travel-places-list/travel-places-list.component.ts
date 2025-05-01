@@ -2,13 +2,22 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+
 import { TravelPlaceService } from '../../../services/travel-place.service';
 import { TravelPlace } from '../../../models/travel-place';
 
 @Component({
   selector: 'app-travel-places-list',
   standalone: true,
-  imports: [CommonModule, RouterModule, MatProgressSpinnerModule],
+  imports: [
+    CommonModule,
+    RouterModule,
+    MatProgressSpinnerModule,
+    MatCardModule,
+    MatButtonModule
+  ],
   templateUrl: './travel-places-list.component.html',
   styleUrls: ['./travel-places-list.component.scss']
 })
@@ -30,7 +39,7 @@ export class TravelPlacesListComponent implements OnInit {
         this.travelPlaces = places;
         this.loading = false;
       },
-      error: (error) => {
+      error: () => {
         this.error = 'Failed to load travel places';
         this.loading = false;
       }
@@ -43,7 +52,7 @@ export class TravelPlacesListComponent implements OnInit {
         next: () => {
           this.travelPlaces = this.travelPlaces.filter(place => place.id !== id);
         },
-        error: (error) => {
+        error: () => {
           this.error = 'Failed to delete travel place';
         }
       });

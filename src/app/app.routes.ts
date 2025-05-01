@@ -2,7 +2,7 @@
 import { Routes } from '@angular/router';
 import { TourPackagesComponent } from './components/tour-packages/tour-packages.component';
 import { DashboardComponent } from './admin/dashboard/dashboard.component';
-import { MatIconModule } from '@angular/material/icon';
+
 
 
 // Export the routes constant
