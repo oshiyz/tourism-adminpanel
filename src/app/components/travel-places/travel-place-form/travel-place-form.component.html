@@ -1,0 +1,116 @@
+<div class="form-container">
+  <h2>{{ isEditMode ? 'Edit' : 'Add' }} Travel Place</h2>
+
+  <form [formGroup]="placeForm" (ngSubmit)="onSubmit()" class="place-form">
+    <div class="form-grid">
+      <mat-form-field>
+        <mat-label>Owner Name</mat-label>
+        <input matInput formControlName="ownerName" required>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Owner Email</mat-label>
+        <input matInput type="email" formControlName="ownerEmail" required>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Place Name</mat-label>
+        <input matInput formControlName="placeName" required>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Location Link</mat-label>
+        <input matInput formControlName="locationLink" required>
+      </mat-form-field>
+
+      <mat-form-field class="full-width">
+        <mat-label>Description</mat-label>
+        <textarea matInput formControlName="description" rows="4" required></textarea>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Images</mat-label>
+        <input matInput formControlName="images">
+      </mat-form-field>
+
+      <mat-form-field class="full-width">
+        <mat-label>Booking Instructions</mat-label>
+        <textarea matInput formControlName="bookingInstructions" rows="3" required></textarea>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Discount Notices</mat-label>
+        <input matInput formControlName="discountNotices">
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Contact Info</mat-label>
+        <input matInput formControlName="contactInfo" required>
+      </mat-form-field>
+    </div>
+
+    <div class="facilities-section">
+      <h3>Facilities</h3>
+      <button type="button" mat-raised-button color="primary" (click)="addFacility()">
+        Add Facility
+      </button>
+
+      <div formArrayName="facilities" class="facilities-list">
+        <div *ngFor="let facility of facilities.controls; let i=index" [formGroupName]="i" class="facility-item">
+          <h4>Facility #{{i + 1}}</h4>
+          <button type="button" mat-icon-button color="warn" (click)="removeFacility(i)" class="remove-facility">
+            <mat-icon>delete</mat-icon>
+          </button>
+
+          <div class="facility-grid">
+            <mat-form-field>
+              <mat-label>Name</mat-label>
+              <input matInput formControlName="name" required>
+            </mat-form-field>
+
+            <mat-form-field>
+              <mat-label>Description</mat-label>
+              <textarea matInput formControlName="description" required></textarea>
+            </mat-form-field>
+
+            <mat-form-field>
+              <mat-label>Average Price</mat-label>
+              <input matInput type="number" formControlName="averagePrice" required>
+            </mat-form-field>
+
+            <mat-form-field>
+              <mat-label>Price Per Person</mat-label>
+              <input matInput type="number" formControlName="pricePerPerson" required>
+            </mat-form-field>
+
+            <mat-form-field>
+              <mat-label>Duration</mat-label>
+              <input matInput formControlName="duration" required>
+            </mat-form-field>
+
+            <mat-form-field>
+              <mat-label>Availability</mat-label>
+              <mat-select formControlName="availability" required>
+                <mat-option value="Weekdays">Weekdays</mat-option>
+                <mat-option value="Weekend">Weekend</mat-option>
+                <mat-option value="Both">Both</mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field>
+              <mat-label>Special Notices</mat-label>
+              <input matInput formControlName="specialNotices">
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button type="button" mat-button routerLink="/travel-places">Cancel</button>
+      <button type="submit" mat-raised-button color="primary" [disabled]="!placeForm.valid">
+        {{ isEditMode ? 'Update' : 'Create' }} Travel Place
+      </button>
+    </div>
+  </form>
+</div>

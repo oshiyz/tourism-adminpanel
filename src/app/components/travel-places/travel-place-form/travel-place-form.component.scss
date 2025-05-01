@@ -1,0 +1,74 @@
+.form-container {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+  h2 {
+    color: #2c3e50;
+    margin-bottom: 2rem;
+  }
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+
+    .full-width {
+      grid-column: 1 / -1;
+    }
+  }
+
+  .facilities-section {
+    margin-top: 2rem;
+    border-top: 1px solid #eee;
+    padding-top: 1rem;
+
+    h3 {
+      color: #2c3e50;
+      margin-bottom: 1rem;
+    }
+
+    .facilities-list {
+      margin-top: 1rem;
+
+      .facility-item {
+        background-color: #f8f9fa;
+        padding: 1rem;
+        border-radius: 4px;
+        margin-bottom: 1rem;
+        position: relative;
+
+        h4 {
+          color: #2c3e50;
+          margin-bottom: 1rem;
+        }
+
+        .remove-facility {
+          position: absolute;
+          top: 0.5rem;
+          right: 0.5rem;
+        }
+
+        .facility-grid {
+          display: grid;
+          grid-template-columns: repeat(2, 1fr);
+          gap: 1rem;
+        }
+      }
+    }
+  }
+
+  .form-actions {
+    margin-top: 2rem;
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+  }
+
+  mat-form-field {
+    width: 100%;
+  }
+}

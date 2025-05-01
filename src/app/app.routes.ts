@@ -2,6 +2,7 @@
 import { Routes } from '@angular/router';
 import { TourPackagesComponent } from './components/tour-packages/tour-packages.component';
 import { DashboardComponent } from './admin/dashboard/dashboard.component';
+import { MatIconModule } from '@angular/material/icon';
 
 
 // Export the routes constant
@@ -39,6 +40,31 @@ export const routes: Routes = [
   {
     path: 'settings',
     loadComponent: () => import('./admin/settings/settings.component').then(m => m.SettingsComponent)
+  },
+  {
+    path: 'travel-places',
+    children: [
+      {
+        path: '',
+        loadComponent: () => import('./components/travel-places/travel-places-list/travel-places-list.component')
+          .then(m => m.TravelPlacesListComponent)
+      },
+      {
+        path: 'new',
+        loadComponent: () => import('./components/travel-places/travel-place-form/travel-place-form.component')
+          .then(m => m.TravelPlaceFormComponent)
+      },
+      {
+        path: 'edit/:id',
+        loadComponent: () => import('./components/travel-places/travel-place-form/travel-place-form.component')
+          .then(m => m.TravelPlaceFormComponent)
+      },
+      {
+        path: 'detail/:id',
+        loadComponent: () => import('./components/travel-places/travel-place-detail/travel-place-detail.component')
+          .then(m => m.TravelPlaceDetailComponent)
+      }
+    ]
   }
 ];
 

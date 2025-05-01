@@ -1,0 +1,23 @@
+<div *ngIf="loading" class="loading-spinner">
+  <mat-spinner></mat-spinner>
+</div>
+<div *ngIf="error" class="error-message">
+  {{ error }}
+</div>
+<div *ngIf="!loading && !error">
+  <h2>Travel Places</h2>
+  <button routerLink="/travel-places/new" mat-raised-button color="primary">
+    Add New Travel Place
+  </button>
+  <ul>
+    <li *ngFor="let place of travelPlaces">
+      <strong>{{ place.placeName }}</strong> - {{ place.description }}
+      <button *ngIf="place.id !== undefined" (click)="deleteTravelPlace(place.id)" mat-button color="warn">Delete</button>
+      <button *ngIf="place.id !== undefined" [routerLink]="['/travel-places/edit', place.id]" mat-button>Edit</button>
+      <!-- Add more details as needed -->
+    </li>
+  </ul>
+  <div *ngIf="travelPlaces.length === 0">
+    No travel places found.
+  </div>
+</div>
