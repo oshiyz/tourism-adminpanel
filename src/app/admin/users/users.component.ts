@@ -474,7 +474,17 @@ export class CreateUserDialogComponent {
         },
         error: (error) => {
           console.error('Error creating user:', error);
-          this.snackBar.open('Error creating user: ' + (error.error?.Message || error.message), 'Close', {
+          let errorMessage = 'Error creating user';
+          
+          if (error.status === 400) {
+            // Check if the error message contains information about duplicate email
+            if (error.error?.Message?.toLowerCase().includes('email') || 
+                error.error?.message?.toLowerCase().includes('email')) {
+              errorMessage = 'This email is already registered';
+            }
+          }
+          
+          this.snackBar.open(errorMessage, 'Close', {
             duration: 5000,
             horizontalPosition: 'end',
             verticalPosition: 'top',
