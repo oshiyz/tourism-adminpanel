@@ -13,7 +13,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
-import { UserService, User, UpdateUserRequest } from '../../services/user.service';
+import { UserService, User, UpdateUserRequest, CreateUserRequest } from '../../services/user.service';
 import { MatSelectModule } from '@angular/material/select';
 
 @Component({
@@ -98,7 +98,10 @@ export class EditUserDialogComponent {
         next: (response) => {
           console.log('Update successful:', response);
           this.snackBar.open('User updated successfully', 'Close', {
-            duration: 3000
+            duration: 3000,
+            horizontalPosition: 'end',
+            verticalPosition: 'top',
+            panelClass: ['success-snackbar']
           });
           this.dialogRef.close(true);
         },
@@ -111,11 +114,113 @@ export class EditUserDialogComponent {
             error: error.error
           });
           this.snackBar.open('Error updating user: ' + (error.error?.Message || error.message), 'Close', {
-            duration: 5000
+            duration: 5000,
+            horizontalPosition: 'end',
+            verticalPosition: 'top',
+            panelClass: ['error-snackbar']
           });
         }
       });
     }
+  }
+}
+
+@Component({
+  selector: 'app-create-user-dialog',
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatDialogModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatSelectModule,
+    FormsModule,
+    ReactiveFormsModule
+  ],
+  template: `
+    <h2 mat-dialog-title>Create New User</h2>
+    <mat-dialog-content>
+      <form #createForm="ngForm" (ngSubmit)="onSubmit()">
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Full Name</mat-label>
+          <input matInput [(ngModel)]="userData.fullName" name="fullName" required>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Email</mat-label>
+          <input matInput [(ngModel)]="userData.email" name="email" required type="email">
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Telephone</mat-label>
+          <input matInput [(ngModel)]="userData.telephone" name="telephone" required>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Password</mat-label>
+          <input matInput [(ngModel)]="userData.password" name="password" required type="password">
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Role</mat-label>
+          <mat-select [(ngModel)]="userData.role" name="role" required>
+            <mat-option value="User">User</mat-option>
+            <mat-option value="Admin">Admin</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </form>
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+      <button mat-button (click)="dialogRef.close()">Cancel</button>
+      <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="!createForm.form.valid">
+        Create User
+      </button>
+    </mat-dialog-actions>
+  `,
+  styles: [`
+    .full-width {
+      width: 100%;
+      margin-bottom: 15px;
+    }
+  `]
+})
+export class CreateUserDialogComponent {
+  userData: CreateUserRequest = {
+    fullName: '',
+    email: '',
+    telephone: '',
+    role: 'User',
+    password: ''
+  };
+
+  constructor(
+    private userService: UserService,
+    private snackBar: MatSnackBar,
+    public dialogRef: MatDialogRef<CreateUserDialogComponent>
+  ) {}
+
+  onSubmit() {
+    this.userService.createUser(this.userData).subscribe({
+      next: () => {
+        this.snackBar.open('User created successfully', 'Close', {
+          duration: 3000,
+          horizontalPosition: 'end',
+          verticalPosition: 'top',
+          panelClass: ['success-snackbar']
+        });
+        this.dialogRef.close(true);
+      },
+      error: (error) => {
+        console.error('Error creating user:', error);
+        this.snackBar.open('Error creating user: ' + (error.error?.Message || error.message), 'Close', {
+          duration: 5000,
+          horizontalPosition: 'end',
+          verticalPosition: 'top',
+          panelClass: ['error-snackbar']
+        });
+      }
+    });
   }
 }
 
@@ -142,6 +247,10 @@ export class EditUserDialogComponent {
       <mat-card>
         <mat-card-header>
           <mat-card-title>Users Management</mat-card-title>
+          <button mat-raised-button color="primary" (click)="openCreateDialog()" class="create-button">
+            <mat-icon>add</mat-icon>
+            Create User
+          </button>
         </mat-card-header>
         <mat-card-content>
           <div class="loading-shade" *ngIf="isLoading">
@@ -228,6 +337,12 @@ export class EditUserDialogComponent {
       margin-bottom: 16px;
     }
 
+    .create-button {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
     .status-badge {
       padding: 4px 8px;
       border-radius: 4px;
@@ -301,10 +416,19 @@ export class UsersComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error loading users:', error);
-        this.snackBar.open('Error loading users', 'Close', {
-          duration: 3000
-        });
         this.isLoading = false;
+      }
+    });
+  }
+
+  openCreateDialog() {
+    const dialogRef = this.dialog.open(CreateUserDialogComponent, {
+      width: '400px'
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.loadUsers(); // Reload the users list after create
       }
     });
   }
@@ -378,14 +502,20 @@ export class DeleteUserDialogComponent {
     this.userService.deleteUser(this.data.id).subscribe({
       next: () => {
         this.snackBar.open('User deleted successfully', 'Close', {
-          duration: 3000
+          duration: 3000,
+          horizontalPosition: 'end',
+          verticalPosition: 'top',
+          panelClass: ['success-snackbar']
         });
         this.dialogRef.close(true);
       },
       error: (error) => {
         console.error('Error deleting user:', error);
         this.snackBar.open('Error deleting user: ' + (error.error?.Message || error.message), 'Close', {
-          duration: 5000
+          duration: 5000,
+          horizontalPosition: 'end',
+          verticalPosition: 'top',
+          panelClass: ['error-snackbar']
         });
       }
     });

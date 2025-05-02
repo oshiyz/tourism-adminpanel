@@ -503,3 +503,37 @@ html, body {
     grid-template-columns: 1fr;
   }
 }
+
+/* Snackbar Styles */
+.success-snackbar {
+  background: #4caf50;
+  color: white;
+  
+  .mat-simple-snackbar-action {
+    color: white;
+  }
+}
+
+.error-snackbar {
+  background: #f44336;
+  color: white;
+  
+  .mat-simple-snackbar-action {
+    color: white;
+  }
+}
+
+/* Ensure snackbar content is accessible */
+.mat-mdc-snack-bar-container {
+  .mdc-snackbar__surface {
+    padding: 14px 16px;
+  }
+  
+  .mdc-snackbar__label {
+    padding-right: 8px;
+  }
+  
+  .mat-mdc-snack-bar-action {
+    margin-left: 8px;
+  }
+}
