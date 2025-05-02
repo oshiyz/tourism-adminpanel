@@ -1,26 +1,122 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatSortModule, Sort } from '@angular/material/sort';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatDialogModule } from '@angular/material/dialog';
+import { MatDialogModule, MatDialog, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { HttpClientModule, HttpClient, HttpHeaders } from '@angular/common/http';
-import { environment } from '../../../environments/environment';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
+import { UserService, User, UpdateUserRequest } from '../../services/user.service';
+import { MatSelectModule } from '@angular/material/select';
 
-interface User {
-  id: number;
-  fullName: string;
-  email: string;
-  telephone: string;
-  role: string;
-  isEmailVerified: boolean;
-  profilePhoto: string;
+@Component({
+  selector: 'app-edit-user-dialog',
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatDialogModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatSelectModule,
+    FormsModule,
+    ReactiveFormsModule
+  ],
+  template: `
+    <h2 mat-dialog-title>Edit User</h2>
+    <mat-dialog-content>
+      <form #editForm="ngForm" (ngSubmit)="onSubmit()">
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Full Name</mat-label>
+          <input matInput [(ngModel)]="userData.fullName" name="fullName" required>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Email</mat-label>
+          <input matInput [(ngModel)]="userData.email" name="email" required type="email">
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Telephone</mat-label>
+          <input matInput [(ngModel)]="userData.telephone" name="telephone" required>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Role</mat-label>
+          <mat-select [(ngModel)]="userData.role" name="role" required>
+            <mat-option value="User">User</mat-option>
+            <mat-option value="Admin">Admin</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </form>
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+      <button mat-button (click)="dialogRef.close()">Cancel</button>
+      <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="!editForm.form.valid">
+        Save Changes
+      </button>
+    </mat-dialog-actions>
+  `,
+  styles: [`
+    .full-width {
+      width: 100%;
+      margin-bottom: 15px;
+    }
+  `]
+})
+export class EditUserDialogComponent {
+  userData: UpdateUserRequest;
+
+  constructor(
+    private userService: UserService,
+    private snackBar: MatSnackBar,
+    public dialogRef: MatDialogRef<EditUserDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: User
+  ) {
+    console.log('Received user data:', data);
+    this.userData = {
+      id: data.id,
+      fullName: data.fullName,
+      email: data.email,
+      telephone: data.telephone,
+      role: data.role
+    };
+    console.log('Initialized form data:', this.userData);
+  }
+
+  onSubmit() {
+    if (this.userData.id) {
+      console.log('Submitting form with data:', this.userData);
+      this.userService.updateUser(this.userData.id, this.userData).subscribe({
+        next: (response) => {
+          console.log('Update successful:', response);
+          this.snackBar.open('User updated successfully', 'Close', {
+            duration: 3000
+          });
+          this.dialogRef.close(true);
+        },
+        error: (error) => {
+          console.error('Error updating user:', error);
+          console.error('Error details:', {
+            status: error.status,
+            statusText: error.statusText,
+            message: error.message,
+            error: error.error
+          });
+          this.snackBar.open('Error updating user: ' + (error.error?.Message || error.message), 'Close', {
+            duration: 5000
+          });
+        }
+      });
+    }
+  }
 }
 
 @Component({
@@ -38,7 +134,8 @@ interface User {
     MatFormFieldModule,
     MatInputModule,
     MatCardModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatSnackBarModule
   ],
   template: `
     <div class="users-container">
@@ -89,6 +186,16 @@ interface User {
                 <span class="status-badge" [class]="user.isEmailVerified ? 'active' : 'inactive'">
                   {{user.isEmailVerified ? 'Verified' : 'Unverified'}}
                 </span>
+              </td>
+            </ng-container>
+
+            <!-- Actions Column -->
+            <ng-container matColumnDef="actions">
+              <th mat-header-cell *matHeaderCellDef>Actions</th>
+              <td mat-cell *matCellDef="let user">
+                <button mat-icon-button color="primary" (click)="openEditDialog(user)">
+                  <mat-icon>edit</mat-icon>
+                </button>
               </td>
             </ng-container>
 
@@ -163,14 +270,18 @@ interface User {
   `]
 })
 export class UsersComponent implements OnInit {
-  displayedColumns: string[] = ['id', 'fullName', 'email', 'telephone', 'role', 'isEmailVerified'];
+  displayedColumns: string[] = ['id', 'fullName', 'email', 'telephone', 'role', 'isEmailVerified', 'actions'];
   users: User[] = [];
   isLoading = false;
   totalUsers = 0;
   pageSize = 10;
   currentPage = 0;
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private userService: UserService,
+    private dialog: MatDialog,
+    private snackBar: MatSnackBar
+  ) {}
 
   ngOnInit() {
     this.loadUsers();
@@ -178,17 +289,7 @@ export class UsersComponent implements OnInit {
 
   loadUsers() {
     this.isLoading = true;
-    const apiUrl = `${environment.apiUrl}/auth/users`;
-    console.log('Environment API URL:', environment.apiUrl);
-    console.log('Full API URL:', apiUrl);
-    
-    // Add headers to handle CORS and content type
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      'Accept': 'application/json'
-    });
-
-    this.http.get<{ users: User[] }>(apiUrl, { headers, withCredentials: true }).subscribe({
+    this.userService.getAllUsers().subscribe({
       next: (response) => {
         console.log('Users response:', response);
         this.users = response.users;
@@ -197,14 +298,23 @@ export class UsersComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error loading users:', error);
-        console.error('Error details:', {
-          status: error.status,
-          statusText: error.statusText,
-          message: error.message,
-          url: error.url,
-          error: error.error
+        this.snackBar.open('Error loading users', 'Close', {
+          duration: 3000
         });
         this.isLoading = false;
+      }
+    });
+  }
+
+  openEditDialog(user: User) {
+    const dialogRef = this.dialog.open(EditUserDialogComponent, {
+      width: '400px',
+      data: user
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.loadUsers(); // Reload the users list after edit
       }
     });
   }
