@@ -32,34 +32,58 @@ import { MatSelectModule } from '@angular/material/select';
   template: `
     <h2 mat-dialog-title>Edit User</h2>
     <mat-dialog-content>
-      <form #editForm="ngForm" (ngSubmit)="onSubmit()">
+      <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
         <mat-form-field appearance="fill" class="full-width">
           <mat-label>Full Name</mat-label>
-          <input matInput [(ngModel)]="userData.fullName" name="fullName" required>
+          <input matInput formControlName="fullName" required>
+          <mat-error *ngIf="userForm.get('fullName')?.hasError('required')" class="error-message">
+            Full name is required
+          </mat-error>
+          <mat-error *ngIf="userForm.get('fullName')?.hasError('minlength')" class="error-message">
+            Full name must be at least 3 characters
+          </mat-error>
+          <mat-error *ngIf="userForm.get('fullName')?.hasError('pattern')" class="error-message">
+            Full name can only contain letters and spaces
+          </mat-error>
         </mat-form-field>
 
         <mat-form-field appearance="fill" class="full-width">
           <mat-label>Email</mat-label>
-          <input matInput [(ngModel)]="userData.email" name="email" required type="email">
+          <input matInput formControlName="email" required type="email">
+          <mat-error *ngIf="userForm.get('email')?.hasError('required')" class="error-message">
+            Email is required
+          </mat-error>
+          <mat-error *ngIf="userForm.get('email')?.hasError('email')" class="error-message">
+            Please enter a valid email address
+          </mat-error>
         </mat-form-field>
 
         <mat-form-field appearance="fill" class="full-width">
           <mat-label>Telephone</mat-label>
-          <input matInput [(ngModel)]="userData.telephone" name="telephone" required>
+          <input matInput formControlName="telephone" required>
+          <mat-error *ngIf="userForm.get('telephone')?.hasError('required')" class="error-message">
+            Telephone number is required
+          </mat-error>
+          <mat-error *ngIf="userForm.get('telephone')?.hasError('pattern')" class="error-message">
+            Please enter a valid phone number (e.g., +94 77 123 4567)
+          </mat-error>
         </mat-form-field>
 
         <mat-form-field appearance="fill" class="full-width">
           <mat-label>Role</mat-label>
-          <mat-select [(ngModel)]="userData.role" name="role" required>
+          <mat-select formControlName="role" required>
             <mat-option value="User">User</mat-option>
             <mat-option value="Admin">Admin</mat-option>
           </mat-select>
+          <mat-error *ngIf="userForm.get('role')?.hasError('required')" class="error-message">
+            Role is required
+          </mat-error>
         </mat-form-field>
       </form>
     </mat-dialog-content>
     <mat-dialog-actions align="end">
       <button mat-button (click)="dialogRef.close()">Cancel</button>
-      <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="!editForm.form.valid">
+      <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="!userForm.valid">
         Save Changes
       </button>
     </mat-dialog-actions>
@@ -69,32 +93,115 @@ import { MatSelectModule } from '@angular/material/select';
       width: 100%;
       margin-bottom: 15px;
     }
+
+    mat-dialog-content {
+      padding: 20px 0;
+    }
+
+    mat-form-field {
+      margin-bottom: 20px;
+    }
+
+    .error-message {
+      font-size: 12px;
+      color: #f44336;
+      margin-top: 4px;
+      display: block;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+
+    mat-dialog-actions {
+      padding: 16px 0;
+      margin-bottom: 0;
+    }
+
+    mat-dialog-actions button {
+      margin-left: 8px;
+    }
+
+    mat-form-field.mat-form-field-invalid .mat-form-field-outline {
+      color: #f44336;
+    }
+
+    mat-form-field.mat-form-field-invalid .mat-form-field-label {
+      color: #f44336;
+    }
+
+    mat-form-field.mat-form-field-invalid .mat-form-field-ripple {
+      background-color: #f44336;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Custom styles for the form fields */
+    ::ng-deep .mat-form-field-appearance-fill .mat-form-field-flex {
+      background-color: #f5f5f5;
+      border-radius: 4px;
+      padding: 0.75em 0.75em 0 0.75em;
+    }
+
+    ::ng-deep .mat-form-field-appearance-fill .mat-form-field-infix {
+      padding: 0.5em 0;
+    }
+
+    /* Style for the submit button */
+    button[mat-raised-button] {
+      padding: 0 24px;
+      height: 36px;
+      font-weight: 500;
+    }
+
+    /* Style for disabled submit button */
+    button[mat-raised-button][disabled] {
+      background-color: rgba(0, 0, 0, 0.12);
+      color: rgba(0, 0, 0, 0.26);
+    }
   `]
 })
 export class EditUserDialogComponent {
-  userData: UpdateUserRequest;
+  userForm: FormGroup;
 
   constructor(
     private userService: UserService,
     private snackBar: MatSnackBar,
     public dialogRef: MatDialogRef<EditUserDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: User
+    @Inject(MAT_DIALOG_DATA) public data: User,
+    private fb: FormBuilder
   ) {
     console.log('Received user data:', data);
-    this.userData = {
-      id: data.id,
-      fullName: data.fullName,
-      email: data.email,
-      telephone: data.telephone,
-      role: data.role
-    };
-    console.log('Initialized form data:', this.userData);
+    this.userForm = this.fb.group({
+      id: [data.id],
+      fullName: [data.fullName, [
+        Validators.required,
+        Validators.minLength(3),
+        Validators.pattern(/^[a-zA-Z\s]*$/)
+      ]],
+      email: [data.email, [
+        Validators.required,
+        Validators.email
+      ]],
+      telephone: [data.telephone, [
+        Validators.required,
+        Validators.pattern(/^\+?[0-9\s-]{10,}$/)
+      ]],
+      role: [data.role, Validators.required]
+    });
+    console.log('Initialized form data:', this.userForm.value);
   }
 
   onSubmit() {
-    if (this.userData.id) {
-      console.log('Submitting form with data:', this.userData);
-      this.userService.updateUser(this.userData.id, this.userData).subscribe({
+    if (this.userForm.valid) {
+      console.log('Submitting form with data:', this.userForm.value);
+      this.userService.updateUser(this.userForm.get('id')?.value, this.userForm.value).subscribe({
         next: (response) => {
           console.log('Update successful:', response);
           this.snackBar.open('User updated successfully', 'Close', {
@@ -186,6 +293,17 @@ export class EditUserDialogComponent {
           </mat-error>
           <mat-error *ngIf="userForm.get('password')?.hasError('minlength')" class="error-message">
             Password must be at least 8 characters
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Confirm Password</mat-label>
+          <input matInput formControlName="confirmPassword" required type="password">
+          <mat-error *ngIf="userForm.get('confirmPassword')?.hasError('required')" class="error-message">
+            Please confirm your password
+          </mat-error>
+          <mat-error *ngIf="userForm.get('confirmPassword')?.hasError('passwordMismatch')" class="error-message">
+            Passwords do not match
           </mat-error>
         </mat-form-field>
 
@@ -314,13 +432,36 @@ export class CreateUserDialogComponent {
         Validators.required,
         Validators.minLength(8)
       ]],
+      confirmPassword: ['', [
+        Validators.required
+      ]],
       role: ['User', Validators.required]
+    }, {
+      validators: this.passwordMatchValidator
     });
+  }
+
+  passwordMatchValidator(form: FormGroup) {
+    const password = form.get('password');
+    const confirmPassword = form.get('confirmPassword');
+
+    if (password && confirmPassword && password.value !== confirmPassword.value) {
+      confirmPassword.setErrors({ passwordMismatch: true });
+    } else {
+      confirmPassword?.setErrors(null);
+    }
   }
 
   onSubmit() {
     if (this.userForm.valid) {
-      const userData: CreateUserRequest = this.userForm.value;
+      const userData: CreateUserRequest = {
+        fullName: this.userForm.get('fullName')?.value,
+        email: this.userForm.get('email')?.value,
+        telephone: this.userForm.get('telephone')?.value,
+        password: this.userForm.get('password')?.value,
+        role: this.userForm.get('role')?.value
+      };
+
       this.userService.createUser(userData).subscribe({
         next: () => {
           this.snackBar.open('User created successfully', 'Close', {
