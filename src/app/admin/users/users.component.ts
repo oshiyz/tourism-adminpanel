@@ -193,8 +193,11 @@ export class EditUserDialogComponent {
             <ng-container matColumnDef="actions">
               <th mat-header-cell *matHeaderCellDef>Actions</th>
               <td mat-cell *matCellDef="let user">
-                <button mat-icon-button color="primary" (click)="openEditDialog(user)">
+                <button mat-icon-button color="primary" (click)="openEditDialog(user)" matTooltip="Edit User">
                   <mat-icon>edit</mat-icon>
+                </button>
+                <button mat-icon-button color="warn" (click)="openDeleteDialog(user)" matTooltip="Delete User">
+                  <mat-icon>delete</mat-icon>
                 </button>
               </td>
             </ng-container>
@@ -319,8 +322,72 @@ export class UsersComponent implements OnInit {
     });
   }
 
+  openDeleteDialog(user: User) {
+    const dialogRef = this.dialog.open(DeleteUserDialogComponent, {
+      width: '400px',
+      data: user
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.loadUsers(); // Reload the users list after delete
+      }
+    });
+  }
+
   onPageChange(event: PageEvent) {
     this.currentPage = event.pageIndex;
     this.pageSize = event.pageSize;
+  }
+}
+
+@Component({
+  selector: 'app-delete-user-dialog',
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatDialogModule,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatInputModule
+  ],
+  template: `
+    <h2 mat-dialog-title>Delete User</h2>
+    <mat-dialog-content>
+      <p>Are you sure you want to delete this user?</p>
+      <p><strong>Name:</strong> {{data.fullName}}</p>
+      <p><strong>Email:</strong> {{data.email}}</p>
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+      <button mat-button (click)="dialogRef.close()">Cancel</button>
+      <button mat-raised-button color="warn" (click)="onDelete()">
+        Delete
+      </button>
+    </mat-dialog-actions>
+  `
+})
+export class DeleteUserDialogComponent {
+  constructor(
+    private userService: UserService,
+    private snackBar: MatSnackBar,
+    public dialogRef: MatDialogRef<DeleteUserDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: User
+  ) {}
+
+  onDelete() {
+    this.userService.deleteUser(this.data.id).subscribe({
+      next: () => {
+        this.snackBar.open('User deleted successfully', 'Close', {
+          duration: 3000
+        });
+        this.dialogRef.close(true);
+      },
+      error: (error) => {
+        console.error('Error deleting user:', error);
+        this.snackBar.open('Error deleting user: ' + (error.error?.Message || error.message), 'Close', {
+          duration: 5000
+        });
+      }
+    });
   }
 } 
