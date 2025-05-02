@@ -11,32 +11,47 @@
   </div>
   <div class="places-grid" *ngIf="!loading && !error">
     <ng-container *ngIf="travelPlaces.length > 0; else noData">
-      <mat-card class="place-card" *ngFor="let place of travelPlaces">
-        <mat-card-header>
-          <mat-card-title>{{ place.placeName }}</mat-card-title>
-          <mat-card-subtitle>{{ place.ownerName }}</mat-card-subtitle>
-        </mat-card-header>
-        <mat-card-content>
-          <p>{{ place.description }}</p>
-          <p><strong>Contact:</strong> {{ place.contactInfo }}</p>
-          <p><strong>Location:</strong>
-            <a *ngIf="place.locationLink" [href]="place.locationLink" target="_blank">View Map</a>
-          </p>
-        </mat-card-content>
-        <mat-card-actions>
-          <button
-            *ngIf="place.id !== undefined"
-            [routerLink]="['/travel-places/edit', place.id]"
-            mat-button
-          >Edit</button>
-          <button
-            *ngIf="place.id !== undefined"
-            (click)="deleteTravelPlace(place.id!)"
-            mat-button
-            color="warn"
-          >Delete</button>
-        </mat-card-actions>
-      </mat-card>
+      <table>
+        <thead>
+          <tr class="table-header">
+            <th>Place Name</th>
+            <th>Owner Name</th>
+            <th>Description</th>
+            <th>Contact Info</th>
+            <th>Location</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="place-row" *ngFor="let place of travelPlaces">
+            <td>{{ place.placeName }}</td>
+            <td>{{ place.ownerName }}</td>
+            <td>{{ place.description }}</td>
+            <td>{{ place.contactInfo }}</td>
+            <td>
+              <a *ngIf="place.locationLink" [href]="place.locationLink" target="_blank">View Map</a>
+            </td>
+            <td class="place-actions">
+              <button
+                *ngIf="place.id !== undefined"
+                [routerLink]="['/travel-places/edit', place.id]"
+                mat-button
+                class="edit-btn"
+              >
+                Edit
+              </button>
+              <button
+                *ngIf="place.id !== undefined"
+                (click)="deleteTravelPlace(place.id!)"
+                mat-button
+                class="delete-btn"
+              >
+                Delete
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </ng-container>
     <ng-template #noData>
       <div class="no-data">No travel places found.</div>

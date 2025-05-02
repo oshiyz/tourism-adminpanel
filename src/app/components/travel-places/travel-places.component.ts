@@ -7,7 +7,7 @@ import { RouterModule } from '@angular/router';
   standalone: true,
   imports: [CommonModule, RouterModule],
   templateUrl: './travel-places.component.html',
-  styleUrl: './travel-places.component.scss'
+  styleUrls: ['./travel-places.component.scss']
 })
 export class TravelPlacesComponent {
   // Component logic will be added here

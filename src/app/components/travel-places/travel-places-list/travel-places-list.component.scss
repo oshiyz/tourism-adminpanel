@@ -1,0 +1,89 @@
+.travel-places-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  background: #fff;
+  border-radius: 8px;
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 1rem;
+  font-size: 1.8rem;
+}
+
+.add-btn {
+  display: block;
+  margin: 0 auto 1.5rem auto;
+}
+
+.loading-spinner,
+.error-message,
+.no-data {
+  text-align: center;
+  margin-top: 2rem;
+  font-size: 1.2rem;
+}
+
+.places-grid {
+  width: 100%;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse; /* Collapse borders for a single line between cells */
+  margin-top: 1.5rem;
+}
+
+th, td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid #ddd; /* Single line under each row */
+}
+
+th {
+  background-color: #f1f1f1;
+  font-weight: bold;
+}
+
+.place-row td {
+  border-right: 1px solid #ddd; /* Light gray line between columns */
+}
+
+.place-row:last-child td {
+  border-bottom: none; /* No bottom border for last row */
+}
+
+.place-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+a {
+  color: #3f51b5;
+  text-decoration: underline;
+}
+
+button[mat-button] {
+  padding: 0.2rem 0.8rem;
+}
+
+.edit-btn {
+  background-color: #4caf50; /* Green for Edit */
+  color: white;
+}
+
+.delete-btn {
+  background-color: #f44336; /* Red for Delete */
+  color: white;
+}
+
+.edit-btn:hover,
+.delete-btn:hover {
+  opacity: 0.8; /* Slight opacity change on hover */
+}
+
+/* Remove the right border from the last column */
+th:last-child, td:last-child {
+  border-right: none;
+}

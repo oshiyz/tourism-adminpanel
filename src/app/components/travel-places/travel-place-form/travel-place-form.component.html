@@ -28,10 +28,13 @@
         <textarea matInput formControlName="description" rows="4" required></textarea>
       </mat-form-field>
 
-      <mat-form-field>
-        <mat-label>Images</mat-label>
-        <input matInput formControlName="images">
-      </mat-form-field>
+      <div class="image-upload">
+        <label>Images</label>
+        <input type="file" multiple accept="image/*" (change)="onImagesSelected($event)">
+        <div class="image-preview" *ngIf="selectedImages.length">
+          <img *ngFor="let img of selectedImages" [src]="img" alt="Preview" style="max-width: 100px; margin: 5px;">
+        </div>
+      </div>
 
       <mat-form-field class="full-width">
         <mat-label>Booking Instructions</mat-label>
@@ -51,9 +54,7 @@
 
     <div class="facilities-section">
       <h3>Facilities</h3>
-      <button type="button" mat-raised-button color="primary" (click)="addFacility()">
-        Add Facility
-      </button>
+      <button type="button" mat-raised-button color="primary" (click)="addFacility()">Add Facility</button>
 
       <div formArrayName="facilities" class="facilities-list">
         <div *ngFor="let facility of facilities.controls; let i=index" [formGroupName]="i" class="facility-item">

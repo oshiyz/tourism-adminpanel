@@ -8,6 +8,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 import { MatIconModule } from '@angular/material/icon';
 import { TravelPlaceService } from '../../../services/travel-place.service';
+import { TravelPlace, TravelPlaceFacility } from '../../../models/travel-place';
+
 
 @Component({
   selector: 'app-travel-place-form',
@@ -29,6 +31,7 @@ export class TravelPlaceFormComponent implements OnInit {
   placeForm: FormGroup;
   isEditMode = false;
   placeId: number | null = null;
+  selectedImages: string[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -51,6 +54,7 @@ export class TravelPlaceFormComponent implements OnInit {
 
   createForm(): FormGroup {
     return this.fb.group({
+      id: [null],
       ownerName: ['', Validators.required],
       ownerEmail: ['', [Validators.required, Validators.email]],
       placeName: ['', Validators.required],
@@ -69,16 +73,18 @@ export class TravelPlaceFormComponent implements OnInit {
     return this.placeForm.get('facilities') as FormArray;
   }
 
-  addFacility(): void {
+  addFacility(facility?: TravelPlaceFacility): void {
+    const mainId = this.placeForm.get('id')?.value || this.placeId; // <-- A
     const facilityForm = this.fb.group({
-      name: ['', Validators.required],
-      description: ['', Validators.required],
-      averagePrice: [0, [Validators.required, Validators.min(0)]],
-      pricePerPerson: [0, [Validators.required, Validators.min(0)]],
-      duration: ['', Validators.required],
-      availability: ['', Validators.required],
-      specialNotices: ['']
-    });
+      travelPlaceId: [facility?.travelPlaceId || mainId, Validators.required], // ADD THIS LINE!
+    name: [facility?.name || '', Validators.required],
+    description: [facility?.description || '', Validators.required],
+    averagePrice: [facility?.averagePrice || 0, [Validators.required, Validators.min(0)]],
+    pricePerPerson: [facility?.pricePerPerson || 0, [Validators.required, Validators.min(0)]],
+    duration: [facility?.duration || '', Validators.required],
+    availability: [facility?.availability || '', Validators.required],
+    specialNotices: [facility?.specialNotices || '']
+  });
 
     this.facilities.push(facilityForm);
   }
@@ -87,43 +93,69 @@ export class TravelPlaceFormComponent implements OnInit {
     this.facilities.removeAt(index);
   }
 
+  onImagesSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const files: FileList | null = input.files;
+    if (!files) return;
+
+    const readFile = (file: File): Promise<string> => {
+      return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result as string);
+        reader.readAsDataURL(file);
+      });
+    };
+
+    Promise.all(Array.from(files).map(file => readFile(file))).then(base64Images => {
+      this.selectedImages = base64Images;
+      this.placeForm.patchValue({ images: JSON.stringify(base64Images) });
+    });
+  }
+
   loadTravelPlace(id: number): void {
     this.travelPlaceService.getTravelPlaceById(id).subscribe({
-      next: (place) => {
-        this.placeForm.patchValue(place);
-        place.facilities?.forEach(facility => {
-          const facilityForm = this.fb.group({
-            id: [facility.id],
-            name: [facility.name, Validators.required],
-            description: [facility.description, Validators.required],
-            averagePrice: [facility.averagePrice, [Validators.required, Validators.min(0)]],
-            pricePerPerson: [facility.pricePerPerson, [Validators.required, Validators.min(0)]],
-            duration: [facility.duration, Validators.required],
-            availability: [facility.availability, Validators.required],
-            specialNotices: [facility.specialNotices]
-          });
-          this.facilities.push(facilityForm);
+      next: (place: TravelPlace) => {
+        this.placeForm.patchValue({
+          id: place.id,
+          ownerName: place.ownerName,
+          ownerEmail: place.ownerEmail,
+          placeName: place.placeName,
+          description: place.description,
+          locationLink: place.locationLink,
+          bookingInstructions: place.bookingInstructions,
+          discountNotices: place.discountNotices,
+          contactInfo: place.contactInfo,
+          bookedDates: place.bookedDates,
+          images: place.images
         });
+
+        if (place.images) {
+          try {
+            this.selectedImages = JSON.parse(place.images);
+          } catch {
+            this.selectedImages = [];
+          }
+        }
+
+        if (place.facilities && place.facilities.length > 0) {
+          place.facilities.forEach(f => this.addFacility(f));
+        }
       },
-      error: (error) => console.error('Error loading travel place:', error)
+      error: (err) => console.error('Error loading travel place:', err)
     });
   }
 
   onSubmit(): void {
-    if (this.placeForm.valid) {
-      const travelPlace = this.placeForm.value;
+    if (this.placeForm.invalid) return;
 
-      if (this.isEditMode && this.placeId) {
-        this.travelPlaceService.updateTravelPlace(this.placeId, travelPlace).subscribe({
-          next: () => this.router.navigate(['/travel-places']),
-          error: (error) => console.error('Error updating travel place:', error)
-        });
-      } else {
-        this.travelPlaceService.createTravelPlace(travelPlace).subscribe({
-          next: () => this.router.navigate(['/travel-places']),
-          error: (error) => console.error('Error creating travel place:', error)
-        });
-      }
-    }
+    const formValue = this.placeForm.value;
+    const request = this.isEditMode
+      ? this.travelPlaceService.updateTravelPlace(this.placeId!, formValue)
+      : this.travelPlaceService.createTravelPlace(formValue);
+
+    request.subscribe({
+      next: () => this.router.navigate(['/travel-places']),
+      error: err => console.error('Submit failed', err)
+    });
   }
 }

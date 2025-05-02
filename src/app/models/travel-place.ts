@@ -5,7 +5,7 @@ export interface TravelPlace {
   placeName: string;
   description: string;
   locationLink: string;
-  images: string;
+  images: string; // JSON array of Base64 strings, e.g., ["data:image/jpeg;base64,...", "..."]
   bookingInstructions: string;
   discountNotices?: string;
   contactInfo: string;
