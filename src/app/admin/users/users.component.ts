@@ -11,7 +11,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { UserService, User, UpdateUserRequest, CreateUserRequest } from '../../services/user.service';
 import { MatSelectModule } from '@angular/material/select';
@@ -141,39 +141,69 @@ export class EditUserDialogComponent {
   template: `
     <h2 mat-dialog-title>Create New User</h2>
     <mat-dialog-content>
-      <form #createForm="ngForm" (ngSubmit)="onSubmit()">
+      <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
         <mat-form-field appearance="fill" class="full-width">
           <mat-label>Full Name</mat-label>
-          <input matInput [(ngModel)]="userData.fullName" name="fullName" required>
+          <input matInput formControlName="fullName" required>
+          <mat-error *ngIf="userForm.get('fullName')?.hasError('required')" class="error-message">
+            Full name is required
+          </mat-error>
+          <mat-error *ngIf="userForm.get('fullName')?.hasError('minlength')" class="error-message">
+            Full name must be at least 3 characters
+          </mat-error>
+          <mat-error *ngIf="userForm.get('fullName')?.hasError('pattern')" class="error-message">
+            Full name can only contain letters and spaces
+          </mat-error>
         </mat-form-field>
 
         <mat-form-field appearance="fill" class="full-width">
           <mat-label>Email</mat-label>
-          <input matInput [(ngModel)]="userData.email" name="email" required type="email">
+          <input matInput formControlName="email" required type="email">
+          <mat-error *ngIf="userForm.get('email')?.hasError('required')" class="error-message">
+            Email is required
+          </mat-error>
+          <mat-error *ngIf="userForm.get('email')?.hasError('email')" class="error-message">
+            Please enter a valid email address
+          </mat-error>
         </mat-form-field>
 
         <mat-form-field appearance="fill" class="full-width">
           <mat-label>Telephone</mat-label>
-          <input matInput [(ngModel)]="userData.telephone" name="telephone" required>
+          <input matInput formControlName="telephone" required>
+          <mat-error *ngIf="userForm.get('telephone')?.hasError('required')" class="error-message">
+            Telephone number is required
+          </mat-error>
+          <mat-error *ngIf="userForm.get('telephone')?.hasError('pattern')" class="error-message">
+            Please enter a valid phone number (e.g., +94 77 123 4567)
+          </mat-error>
         </mat-form-field>
 
         <mat-form-field appearance="fill" class="full-width">
           <mat-label>Password</mat-label>
-          <input matInput [(ngModel)]="userData.password" name="password" required type="password">
+          <input matInput formControlName="password" required type="password">
+          <mat-error *ngIf="userForm.get('password')?.hasError('required')" class="error-message">
+            Password is required
+          </mat-error>
+          <mat-error *ngIf="userForm.get('password')?.hasError('minlength')" class="error-message">
+            Password must be at least 8 characters
+          </mat-error>
         </mat-form-field>
 
         <mat-form-field appearance="fill" class="full-width">
           <mat-label>Role</mat-label>
-          <mat-select [(ngModel)]="userData.role" name="role" required>
+          <mat-select formControlName="role" required>
             <mat-option value="User">User</mat-option>
             <mat-option value="Admin">Admin</mat-option>
           </mat-select>
+          <mat-error *ngIf="userForm.get('role')?.hasError('required')" class="error-message">
+            Role is required
+          </mat-error>
         </mat-form-field>
       </form>
     </mat-dialog-content>
     <mat-dialog-actions align="end">
       <button mat-button (click)="dialogRef.close()">Cancel</button>
-      <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="!createForm.form.valid">
+      <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="!userForm.valid">
         Create User
       </button>
     </mat-dialog-actions>
@@ -183,44 +213,135 @@ export class EditUserDialogComponent {
       width: 100%;
       margin-bottom: 15px;
     }
+
+    mat-dialog-content {
+      padding: 20px 0;
+    }
+
+    mat-form-field {
+      margin-bottom: 20px;
+    }
+
+    .error-message {
+      font-size: 12px;
+      color: #f44336;
+      margin-top: 4px;
+      display: block;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+
+    mat-dialog-actions {
+      padding: 16px 0;
+      margin-bottom: 0;
+    }
+
+    mat-dialog-actions button {
+      margin-left: 8px;
+    }
+
+    mat-form-field.mat-form-field-invalid .mat-form-field-outline {
+      color: #f44336;
+    }
+
+    mat-form-field.mat-form-field-invalid .mat-form-field-label {
+      color: #f44336;
+    }
+
+    mat-form-field.mat-form-field-invalid .mat-form-field-ripple {
+      background-color: #f44336;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Custom styles for the form fields */
+    ::ng-deep .mat-form-field-appearance-fill .mat-form-field-flex {
+      background-color: #f5f5f5;
+      border-radius: 4px;
+      padding: 0.75em 0.75em 0 0.75em;
+    }
+
+    ::ng-deep .mat-form-field-appearance-fill .mat-form-field-infix {
+      padding: 0.5em 0;
+    }
+
+    /* Style for the submit button */
+    button[mat-raised-button] {
+      padding: 0 24px;
+      height: 36px;
+      font-weight: 500;
+    }
+
+    /* Style for disabled submit button */
+    button[mat-raised-button][disabled] {
+      background-color: rgba(0, 0, 0, 0.12);
+      color: rgba(0, 0, 0, 0.26);
+    }
   `]
 })
 export class CreateUserDialogComponent {
-  userData: CreateUserRequest = {
-    fullName: '',
-    email: '',
-    telephone: '',
-    role: 'User',
-    password: ''
-  };
+  userForm: FormGroup;
 
   constructor(
     private userService: UserService,
     private snackBar: MatSnackBar,
-    public dialogRef: MatDialogRef<CreateUserDialogComponent>
-  ) {}
+    public dialogRef: MatDialogRef<CreateUserDialogComponent>,
+    private fb: FormBuilder
+  ) {
+    this.userForm = this.fb.group({
+      fullName: ['', [
+        Validators.required,
+        Validators.minLength(3),
+        Validators.pattern(/^[a-zA-Z\s]*$/)
+      ]],
+      email: ['', [
+        Validators.required,
+        Validators.email
+      ]],
+      telephone: ['', [
+        Validators.required,
+        Validators.pattern(/^\+?[0-9\s-]{10,}$/)
+      ]],
+      password: ['', [
+        Validators.required,
+        Validators.minLength(8)
+      ]],
+      role: ['User', Validators.required]
+    });
+  }
 
   onSubmit() {
-    this.userService.createUser(this.userData).subscribe({
-      next: () => {
-        this.snackBar.open('User created successfully', 'Close', {
-          duration: 3000,
-          horizontalPosition: 'end',
-          verticalPosition: 'top',
-          panelClass: ['success-snackbar']
-        });
-        this.dialogRef.close(true);
-      },
-      error: (error) => {
-        console.error('Error creating user:', error);
-        this.snackBar.open('Error creating user: ' + (error.error?.Message || error.message), 'Close', {
-          duration: 5000,
-          horizontalPosition: 'end',
-          verticalPosition: 'top',
-          panelClass: ['error-snackbar']
-        });
-      }
-    });
+    if (this.userForm.valid) {
+      const userData: CreateUserRequest = this.userForm.value;
+      this.userService.createUser(userData).subscribe({
+        next: () => {
+          this.snackBar.open('User created successfully', 'Close', {
+            duration: 3000,
+            horizontalPosition: 'end',
+            verticalPosition: 'top',
+            panelClass: ['success-snackbar']
+          });
+          this.dialogRef.close(true);
+        },
+        error: (error) => {
+          console.error('Error creating user:', error);
+          this.snackBar.open('Error creating user: ' + (error.error?.Message || error.message), 'Close', {
+            duration: 5000,
+            horizontalPosition: 'end',
+            verticalPosition: 'top',
+            panelClass: ['error-snackbar']
+          });
+        }
+      });
+    }
   }
 }
 
